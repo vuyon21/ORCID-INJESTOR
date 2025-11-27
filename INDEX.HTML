@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>ORCID DOI Importer</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <div class="app">
+    <header>
+      <h1>ORCID DOI Importer</h1>
+      <p>Sign in with ORCID, paste your DOIs, and we’ll push them to your ORCID record.</p>
+    </header>
+
+    <section id="authSection">
+      <button id="loginBtn" class="btn primary">Sign in with ORCID</button>
+      <p id="authStatus" class="status"></p>
+    </section>
+
+    <section id="importSection" class="hidden">
+      <h2>Step 2: Paste your DOIs</h2>
+      <p>Paste one DOI per line (e.g. <code>10.1038/s41586-020-2012-7</code>).</p>
+      <textarea id="doiInput" rows="10" placeholder="10.1038/xxx&#10;10.1016/j.yyy..."></textarea>
+      <button id="importBtn" class="btn">Import to ORCID</button>
+      <p id="importStatus" class="status"></p>
+
+      <div id="log" class="log"></div>
+    </section>
+
+    <footer>
+      <small>Prototype · ORCID + Crossref integration</small>
+    </footer>
+
+    <script src="app.js"></script>
+  </div>
+</body>
+</html>
