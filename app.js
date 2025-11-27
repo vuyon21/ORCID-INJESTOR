@@ -1,3 +1,4 @@
+
 const API_BASE = "https://steep-limit-90ec.ngayeka-vuyo.workers.dev";
 
 const loginBtn = document.getElementById("loginBtn");
@@ -18,16 +19,15 @@ async function checkAuth() {
   try {
     const res = await fetch(`${API_BASE}/api/me`, { credentials: "include" });
     if (!res.ok) {
-      authStatus.textContent = "Not connected to ORCID yet.";
+      authStatus.textContent = "Unable to verify ORCID connection.";
       importSection.classList.add("hidden");
       return;
     }
     const data = await res.json();
-    authStatus.textContent = `Connected to ORCID: ${data.orcid || "unknown iD"}`;
+    authStatus.textContent = `Connected to ORCID: ${data.orcid}`;
     authStatus.classList.add("success");
     importSection.classList.remove("hidden");
   } catch (err) {
-    console.error(err);
     authStatus.textContent = "Unable to verify ORCID connection.";
     authStatus.classList.add("error");
   }
@@ -54,12 +54,6 @@ importBtn.addEventListener("click", async () => {
     .map(s => s.trim())
     .filter(Boolean);
 
-  if (!dois.length) {
-    importStatus.textContent = "No valid DOIs detected.";
-    importStatus.classList.add("error");
-    return;
-  }
-
   importBtn.disabled = true;
   importStatus.textContent = "Importing DOIs to ORCID...";
   log(`Sending ${dois.length} DOIs to server...`);
@@ -72,23 +66,19 @@ importBtn.addEventListener("click", async () => {
       body: JSON.stringify({ dois })
     });
 
-    const data = await res.json().catch(() => ({}));
+    const data = await res.json();
 
     if (!res.ok) {
       importStatus.textContent = data.error || "Import failed.";
       importStatus.classList.add("error");
-      if (data.details) log(data.details);
       return;
     }
 
-    importStatus.textContent = `Imported ${data.imported || 0} DOIs (skipped ${data.skipped || 0}).`;
+    importStatus.textContent = `Imported ${data.imported} DOIs (skipped ${data.skipped}).`;
     importStatus.classList.add("success");
 
-    if (Array.isArray(data.logs)) {
-      data.logs.forEach(msg => log(msg));
-    }
+    data.logs.forEach(msg => log(msg));
   } catch (err) {
-    console.error(err);
     importStatus.textContent = "Unexpected error during import.";
     importStatus.classList.add("error");
   } finally {
@@ -96,13 +86,11 @@ importBtn.addEventListener("click", async () => {
   }
 });
 
-// If the Worker redirects back with ?auth=ok, show that nicely and check auth.
 (function init() {
   const params = new URLSearchParams(window.location.search);
   if (params.get("auth") === "ok") {
-    authStatus.textContent = "Successfully connected to ORCID. You can now import DOIs.";
+    authStatus.textContent = "Successfully connected to ORCID!";
     authStatus.classList.add("success");
-    // Clean URL
     window.history.replaceState({}, "", window.location.pathname);
   }
   checkAuth();
