@@ -1,4 +1,4 @@
-const API_BASE = "https://YOUR_WORKER_SUBDOMAIN.workers.dev"; // TODO: change this
+const API_BASE = "https://steep-limit-90ec.ngayeka-vuyo.workers.dev";
 
 const loginBtn = document.getElementById("loginBtn");
 const authStatus = document.getElementById("authStatus");
